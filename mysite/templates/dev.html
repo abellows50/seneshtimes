@@ -1,0 +1,120 @@
+<form method='post'>
+    <input type="hidden" name="logout" value="logout">
+    <input type=submit value="Logout">
+</form>
+
+<form method='post'>
+    <input type="hidden" name="tree" value="tree">
+    <input type=submit value="Tree Site">
+</form>
+
+<form method='post'>
+    <input type="hidden" name="delete" value="delete">
+    <input type=submit value="Delete Console">
+</form>
+
+<form method='post'>
+    <input type="hidden" name="addUser" value="addUser">
+    <input type=submit value="Add A User">
+</form>
+
+<form method='post'>
+    <input type="hidden" name="manageUsers" value="manageUsers">
+    <input type=submit value="Manage Newspaper Users">
+</form>
+
+<form method='post'>
+    <input type="hidden" name="search" value="search">
+    <input type=submit value="Search and Edit Articles">
+</form>
+
+<a href="{{url_for('admin')}}"">Admin</a>
+
+{% if tree %}
+<h1>TREE:</h1>
+{% for section in tree.keys() %}
+    <h2>{{section}}</h2>
+    {% for art in tree[section] %}
+        {% if art %}
+            <p>\__{{art}}</p>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+{% endif %}
+
+{% if delete_tree %}
+<h1>DELETE TREE:</h1>
+<form method=post>
+<input type="hidden" name="what_to_delete" value="what_to_delete">
+{% for section in delete_tree.keys() %}
+    <h2>{{section}}</h2>
+    {% for art in delete_tree[section] %}
+        {% if art %}
+            <input type=checkbox name="{{section}}/{{art}}" value="{{section}}/{{art}}" id="{{section}}/{{art}}">
+            <label for="{{section}}/{{art}}">\__{{art}}</label><br>
+        {% endif %}
+    {% endfor %}
+{% endfor %}
+<input type=submit value=Submit>
+</form>
+{% endif %}
+
+{% if add_user %}
+<h1>ADD USER:</h1>
+<form method='post'>
+    <input type="hidden" name="addingUser" value="addingUser">
+    <label for=username>USERNAME:</label><br>
+    <input type=text name=username id=username><br>
+    <label for=password>Password:</label><br>
+    <input type=password name=password id=password><br>
+
+    <input type=submit value="Register">
+</form>
+{% endif %}
+
+{% if manage_user %}
+<h1>MANAGE USERS:</h1>
+<form method='post'>
+    <input type="hidden" name="managingUser" value="managingUser">
+    {% for user in users %}
+        <input type=checkbox name="n-{{user}}" value="{{user}}" id="{{user}}">
+        <label for="{{user}}">{{user}}</label><br>
+    {% endfor %}
+    <input type=submit value="Delete Selected Users">
+</form>
+{% endif %}
+
+{% if search %}
+<h1>SEARCH AND EDIT:</h1>
+<form method='post'>
+    <input type="hidden" name="searching" value="searching">
+    <label for=text>TEXT:</label><br>
+    <input type=search name=text id=text><br>
+
+
+    <input type=submit value="Search">
+</form>
+{% endif %}
+{% if articles %}
+<h1>RESULTS: </h1>
+    <ul>
+    {% for article in articles %}
+        <li><a href="{{article['article_link']|safe}}">{{article['title']}} by {{article['author']}}</a><br></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if articles %}
+<h1>EDIT: </h1>
+<form method=post>
+    <input type="hidden" name="edited" value="edit">
+    {% for article in articles %}
+        <label for="{{article['title']}}"><a href="{{article['article_link']|safe}}">{{article['title']}} by {{article['author']}}</a></label><br>
+        <textarea rows="8" cols="150" name="{{article['article_link']}}">{{article['article']}}</textArea><br><br>
+    {% endfor %}
+    <input type=submit value="Submit Edits">
+</form>
+{% endif %}
+
+
+

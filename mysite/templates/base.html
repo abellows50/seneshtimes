@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hannah Senesh Times</title>
+    <link rel="icon" href="{{url_for('static', filename='logo.png')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link href="https://g1.nyt.com/fonts/css/web-fonts.7705b21d4573b168a8aaebc4ff17d395d2458dca.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+    {% if banner %}
+        <banner>
+            <h1>{{banner}}</h1>
+        </banner>
+    {% endif %}
+    <header>
+	{% if header %}
+	   <h1>{{header|safe}}</h1>
+	{% else %}
+	   Hannah Senesh Times
+	{% endif %}
+    </header>
+
+    <nav>
+        <a href="{{url_for('section_page',section='home')}}">Home</a>
+        <a href="{{url_for('section_page',section='sports')}}">Sports</a>
+        <a href="{{url_for('section_page',section='schoolevents')}}">News</a>
+        <a href="{{url_for('section_page',section='worldevents')}}">World</a>
+        <a href="{{url_for('section_page',section='artsandentertainment')}}">Arts and Entertainment</a>
+        <a href="{{url_for('section_page',section='aboutus')}}">About Us</a>
+
+
+    </nav>
+    {{content|safe}}
+   {% block body %}
+   {% endblock %}
+    <footer>
+        <nav><a href="{{url_for('mailingList')}}">Sign Up For Our Mailing List</a></nav>
+
+        &copy; 2024 Hannah Senesh Times
+    </footer>
+
+    <script async defer src="https://analytics.us.umami.is/script.js" data-website-id="3dc040fb-689a-445b-9b95-9e9296bc1ed3"></script>
+
+</body>
+</html>

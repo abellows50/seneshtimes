@@ -1,0 +1,15 @@
+<section>
+    {% for article in articles %}
+    <article>
+        <img src="{{article['src']|safe}}" width="50%"/>
+        <!--<div class="content">-->
+          <h3>{{article['title']|safe}}</h3>
+          <p class="byline">By {{article['author']|safe}}</p>
+          <p>
+            {{article['article']|safe}}
+          </p>
+          <a href="{{article['article_link']|safe}}">Read more</a>
+        <!--</div> -->
+    </article>
+    {% endfor %}
+</section>

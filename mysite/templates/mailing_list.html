@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% if welcome %}
+<center><h1>Welcome to the Hannah Senesh Times Mailing List!</h1></center>
+{% endif %}
+<article>
+<form method='post' id=login>
+    <label for=email>Email: </label>
+    <input type=text name=email id=email>
+    <br>
+    <br>
+    <input type=submit value=Submit>
+</form>
+</article>
+{% endblock %}

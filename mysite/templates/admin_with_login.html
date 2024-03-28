@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block body %}
+<section>
+<h1>{{message|safe}}</h1>
+{% if logged_in %}
+    <form method="post" enctype=multipart/form-data  id=requestForm>
+        <input type="hidden" name="makeArticle" value="makeArticle">
+        <label for="title">Article Title:</label><br>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="author">Author:</label><br>
+        <input type="text" id="author" name="author" required><br>
+
+        <label for="img">IMG: </label>
+        <input type="file" name="img" id="img" required><br>
+
+        <label for="content">Content:</label><br>
+        <textarea rows="4" cols="50" name="content" form="requestForm"></textarea><br>
+        <!--<input type="text" id="content" name="content" required><br>-->
+
+        <label for="section">Section:</label><br>
+        <select id="section" name="section" required>
+          <option value="artsandentertainment">Arts and Entertainment</option>
+          <option value="sports">Sports</option>
+          <option value="worldevents">World Events</option>
+          <option value="schoolevents">News</option>
+          <option value="aboutus">About Us</option>
+        </select><br>
+
+        <input type="submit" value="Submit">
+    </form>
+    <form method="post">
+        <input type="hidden" name="logout" value="logout">
+        <input type="submit" value="Logout">
+    </form>
+{% else %}
+    <form method="post" id=login>
+        <input type="hidden" name="login" value="login">
+        <label for="username" >Username:</label><br>
+        <input type="text" id="username" name="username" required><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br>
+
+        <input type="submit" value="Submit">
+    </form>
+{%endif%}
+</section>
+
+
+{% endblock %}
