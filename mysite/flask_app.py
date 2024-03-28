@@ -141,12 +141,11 @@ def loadAllArticlesCondensed():
 
 @app.route("/home")
 def home():
-    return "dfg"
-    # articleBodys = []
-    # section_name = switch_dir_to_section_header('home')
-    # articleBodys = loadAllArticlesCondensed()
-    # html = render_template('home_page_block.html', articles=articleBodys)
-    # return render_template('base.html',header=section_name,content=html)
+    articleBodys = []
+    section_name = switch_dir_to_section_header('home')
+    articleBodys = loadAllArticlesCondensed()
+    html = render_template('home_page_block.html', articles=articleBodys)
+    return render_template('base.html',header=section_name,content=html)
 
 @app.route('/<section>')
 def section_page(section):
