@@ -90,15 +90,15 @@ def makeArticle(request):
         draft["section"] = result["section"]
         draft["article"] = file
 
-        file = json.dumps(draft)
+        file = json.dumps(file)
 
         open(f"{ARTICLEPATH}/{result['section']}/{result['title']}.json","x")
-        with open(f"{ARTICLEPATH}/drafts/{result['title']}.json","w")as f:
+        with open(f"{ARTICLEPATH}/{result['section']}/{result['title']}.json","w")as f:
             f.write(file)
-        with open(f"{ARTICLEPATH}/drafts/dir.txt","r") as f:
+        with open(f"{ARTICLEPATH}/{result['section']}/dir.txt","r") as f:
             dir = f.read()
         dir+= f"{result['title']}\n"
-        with open(f"{ARTICLEPATH}/drafts/dir.txt","w") as f:
+        with open(f"{ARTICLEPATH}/{result['section']}/dir.txt","w") as f:
             f.write(dir)
         return True
     except:
