@@ -15,7 +15,7 @@ ROOT = "/home/seneshtimes/seneshtimes/mysite"
 ARTICLEPATH = f"{ROOT}/articles"
 PATH = "/home/seneshtimes/seneshtimes/mysite"
 
-SECTIONS = ['sports','worldevents','schoolevents','artsandentertainment', 'drafts']
+SECTIONS = ['sports','worldevents','schoolevents','artsandentertainment']
 
 def loggedIn(session):
     if "username" in session:
@@ -37,16 +37,7 @@ def login(username,password):
     if username in auth.keys():
         # Initializing the sha256() method
         sha256 = hashlib.sha256()
-
-        # Passing the byte stream as an argument
         sha256.update(password.encode(encoding="UTF-8"))
-
-        # sha256.hexdigest() hashes all the input data
-        # passed to the sha256() via sha256.update()
-        # Acts as a finalize method, after which all
-        # the input data gets hashed
-        # hexdigest() hashes the data, and returns
-        # the output in hexadecimal format
         passw = sha256.hexdigest()
 
         return passw == auth[username]
@@ -86,14 +77,11 @@ def makeArticle(request):
         file["src"] = imgPath
         file["date"] = getDate()
 
-        draft = {}
-        draft["section"] = result["section"]
-        draft["article"] = file
 
-        file = json.dumps(draft)
 
-        open(f"{ARTICLEPATH}/{result['section']}/{result['title']}.json","x")
-        with open(f"{ARTICLEPATH}/drafts/{result['title']}.json","w")as f:
+        file = json.dumps(file)
+
+        with open(f"{ARTICLEPATH}/{result['section']}/{result['title']}.json","w")as f:
             f.write(file)
         return True
     except:
@@ -282,20 +270,12 @@ def development():
 
                     with open(f"{ARTICLEPATH}/{file}.json")as f:
                         articleContent = f.read()
+                        # return articleContent
                         articleContent = json.loads(articleContent)
 
                     imgPath = f"{ARTICLEPATH}/{articleContent['src']}"
 
-                    with open(f"{ARTICLEPATH}/{section}/dir.txt",'r') as f:
-                        dir = f.readlines()
-                    newDir = []
-                    for l in dir:
-                        if fileName not in l:
-                            newDir.append(l)
-                    dir = "".join(newDir)
 
-                    with open(f"{ARTICLEPATH}/{section}/dir.txt",'w') as f:
-                        f.write(dir)
 
                     os.remove(f"{ARTICLEPATH}/{file}.json")
                     os.remove(imgPath)
