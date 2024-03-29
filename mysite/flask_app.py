@@ -37,16 +37,7 @@ def login(username,password):
     if username in auth.keys():
         # Initializing the sha256() method
         sha256 = hashlib.sha256()
-
-        # Passing the byte stream as an argument
         sha256.update(password.encode(encoding="UTF-8"))
-
-        # sha256.hexdigest() hashes all the input data
-        # passed to the sha256() via sha256.update()
-        # Acts as a finalize method, after which all
-        # the input data gets hashed
-        # hexdigest() hashes the data, and returns
-        # the output in hexadecimal format
         passw = sha256.hexdigest()
 
         return passw == auth[username]
@@ -86,29 +77,19 @@ def makeArticle(request):
         file["src"] = imgPath
         file["date"] = getDate()
 
-        draft = {}
-        draft["section"] = result["section"]
-        draft["article"] = file
-
         file = json.dumps(file)
 
-        open(f"{ARTICLEPATH}/{result['section']}/{result['title']}.json","x")
         with open(f"{ARTICLEPATH}/{result['section']}/{result['title']}.json","w")as f:
             f.write(file)
-        with open(f"{ARTICLEPATH}/{result['section']}/dir.txt","r") as f:
-            dir = f.read()
-        dir+= f"{result['title']}\n"
-        with open(f"{ARTICLEPATH}/{result['section']}/dir.txt","w") as f:
-            f.write(dir)
+
         return True
     except:
         return False
 
 def getArticles(section):
-    with open(f"{ARTICLEPATH}/{section}/dir.txt") as f:
-        articles = f.readlines()
-        articles = [x.strip() for x in articles]
-        return articles
+    articles = os.listdir(f"{ARTICLEPATH}/{section}")
+    articles = [f.split(".json")[0] for f in articles if ".json" in f]
+    return articles
 
 def processDate(dateIn):
     dateIn = dateIn.split(" ")[0]
@@ -141,6 +122,7 @@ def loadAllArticlesCondensed():
 
 @app.route("/home")
 def home():
+
     articleBodys = []
     section_name = switch_dir_to_section_header('home')
     articleBodys = loadAllArticlesCondensed()
@@ -163,13 +145,27 @@ def loadArticlesFromRaw(section):
     articles = getArticles(section);
     articleBodys = []
     for article in articles:
-        if article != "":
-            with open(f"{ARTICLEPATH}/{section}/{article}.json")as f:
-                articleContent = f.read()
-            articleContent = json.loads(articleContent) #get dictionary from json file
-            articleContent['article_link'] = f"/{section}/{article}" #add article link
-            articleContent['article'] = articleContent['article']
-            articleBodys.append(articleContent)
+        if(section != 'drafts'):
+            if article != "":
+                try:
+                    with open(f"{ARTICLEPATH}/{section}/{article}.json")as f:
+                        articleContent = f.read()
+                    articleContent = json.loads(articleContent) #get dictionary from json file
+                    articleContent['article_link'] = f"/{section}/{article}" #add article link
+                    articleContent['article'] = articleContent['article']
+                    articleBodys.append(articleContent)
+                except:pass
+        else:
+            if article != "":
+                try:
+                    with open(f"{ARTICLEPATH}/{section}/{article}.json")as f:
+                        articleContent = f.read()
+                    articleContent = json.loads(articleContent) #get dictionary from json file
+                    articleContent = articleContent['article']
+                    articleContent['article_link'] = f"/{section}/{article}" #add article link
+                    articleContent['article'] = articleContent['article']
+                    articleBodys.append(articleContent)
+                except:pass
 
     def keyFxn(e):
             return processDate(e["date"])
@@ -273,20 +269,12 @@ def development():
 
                     with open(f"{ARTICLEPATH}/{file}.json")as f:
                         articleContent = f.read()
+                        # return articleContent
                         articleContent = json.loads(articleContent)
 
                     imgPath = f"{ARTICLEPATH}/{articleContent['src']}"
 
-                    with open(f"{ARTICLEPATH}/{section}/dir.txt",'r') as f:
-                        dir = f.readlines()
-                    newDir = []
-                    for l in dir:
-                        if fileName not in l:
-                            newDir.append(l)
-                    dir = "".join(newDir)
 
-                    with open(f"{ARTICLEPATH}/{section}/dir.txt",'w') as f:
-                        f.write(dir)
 
                     os.remove(f"{ARTICLEPATH}/{file}.json")
                     os.remove(imgPath)
