@@ -269,7 +269,6 @@ def development():
 
                     with open(f"{ARTICLEPATH}/{file}.json")as f:
                         articleContent = f.read()
-                        # return articleContent
                         articleContent = json.loads(articleContent)
 
                     imgPath = f"{ARTICLEPATH}/{articleContent['src']}"
