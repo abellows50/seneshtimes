@@ -15,7 +15,7 @@ ROOT = "/home/seneshtimes/seneshtimes/mysite"
 ARTICLEPATH = f"{ROOT}/articles"
 PATH = "/home/seneshtimes/seneshtimes/mysite"
 
-SECTIONS = ['sports','worldevents','schoolevents','artsandentertainment']
+SECTIONS = ['sports','worldevents','schoolevents','artsandentertainment', 'drafts']
 
 def loggedIn(session):
     if "username" in session:
@@ -95,20 +95,14 @@ def makeArticle(request):
         open(f"{ARTICLEPATH}/{result['section']}/{result['title']}.json","x")
         with open(f"{ARTICLEPATH}/drafts/{result['title']}.json","w")as f:
             f.write(file)
-        with open(f"{ARTICLEPATH}/drafts/dir.txt","r") as f:
-            dir = f.read()
-        dir+= f"{result['title']}\n"
-        with open(f"{ARTICLEPATH}/drafts/dir.txt","w") as f:
-            f.write(dir)
         return True
     except:
         return False
 
 def getArticles(section):
-    with open(f"{ARTICLEPATH}/{section}/dir.txt") as f:
-        articles = f.readlines()
-        articles = [x.strip() for x in articles]
-        return articles
+    articles = os.listdir(f"{ARTICLEPATH}/{section}")
+    articles = [f.split(".json")[0] for f in articles if ".json" in f]
+    return articles
 
 def processDate(dateIn):
     dateIn = dateIn.split(" ")[0]
@@ -141,6 +135,7 @@ def loadAllArticlesCondensed():
 
 @app.route("/home")
 def home():
+
     articleBodys = []
     section_name = switch_dir_to_section_header('home')
     articleBodys = loadAllArticlesCondensed()
@@ -163,13 +158,27 @@ def loadArticlesFromRaw(section):
     articles = getArticles(section);
     articleBodys = []
     for article in articles:
-        if article != "":
-            with open(f"{ARTICLEPATH}/{section}/{article}.json")as f:
-                articleContent = f.read()
-            articleContent = json.loads(articleContent) #get dictionary from json file
-            articleContent['article_link'] = f"/{section}/{article}" #add article link
-            articleContent['article'] = articleContent['article']
-            articleBodys.append(articleContent)
+        if(section != 'drafts'):
+            if article != "":
+                try:
+                    with open(f"{ARTICLEPATH}/{section}/{article}.json")as f:
+                        articleContent = f.read()
+                    articleContent = json.loads(articleContent) #get dictionary from json file
+                    articleContent['article_link'] = f"/{section}/{article}" #add article link
+                    articleContent['article'] = articleContent['article']
+                    articleBodys.append(articleContent)
+                except:pass
+        else:
+            if article != "":
+                try:
+                    with open(f"{ARTICLEPATH}/{section}/{article}.json")as f:
+                        articleContent = f.read()
+                    articleContent = json.loads(articleContent) #get dictionary from json file
+                    articleContent = articleContent['article']
+                    articleContent['article_link'] = f"/{section}/{article}" #add article link
+                    articleContent['article'] = articleContent['article']
+                    articleBodys.append(articleContent)
+                except:pass
 
     def keyFxn(e):
             return processDate(e["date"])
