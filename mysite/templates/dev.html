@@ -28,6 +28,11 @@
     <input type=submit value="Search and Edit Articles">
 </form>
 
+<form method='post'>
+    <input type="hidden" name="archive" value="archive">
+    <input type=submit value="Initiate an Archive">
+</form>
+
 <a href="{{url_for('admin')}}"">Admin</a>
 
 {% if tree %}
@@ -113,6 +118,17 @@
         <textarea rows="8" cols="150" name="{{article['article_link']}}">{{article['article']}}</textArea><br><br>
     {% endfor %}
     <input type=submit value="Submit Edits">
+</form>
+{% endif %}
+
+{% if archive %}
+<form method='post'>
+    <input type="hidden" name="archive_name" value="archive_name">
+    <label for=text>Archive Name (year-year):</label><br>
+    <input type=text name=text id=text><br>
+
+
+    <input type=submit value="Archive ALL CURRENT ARTICLES TO AN ARCHIVE NAMED WHAT YOU PUT IN THE BOX. THIS IS NOT A REVERSABLE ACTION."</a>
 </form>
 {% endif %}
 

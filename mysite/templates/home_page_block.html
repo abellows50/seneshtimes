@@ -1,7 +1,9 @@
 <section>
     {% for article in articles %}
     <article>
+        {% if imgs %}
         <img src="{{article['src']|safe}}" width="50%"/>
+        {% endif %}
         <!--<div class="content">-->
           <h3>{{article['title']|safe}}</h3>
           <p class="byline">By {{article['author']|safe}}</p>

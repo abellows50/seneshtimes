@@ -86,10 +86,12 @@ def makeArticle(request):
     except:
         return False
 
-def getArticles(section):
-    articles = os.listdir(f"{ARTICLEPATH}/{section}")
+def getArticles(path_extension,section):
+
+    articles = os.listdir(f"{ARTICLEPATH}/{path_extension}/{section}")
     articles = [f.split(".json")[0] for f in articles if ".json" in f]
     return articles
+
 
 def processDate(dateIn):
     dateIn = dateIn.split(" ")[0]
@@ -106,17 +108,17 @@ def hello_world():
     return redirect(url_for('section_page',section='home'))
 
 
-def loadAllArticles():
+def loadAllArticles(path_extension):
     articleBodys = []
     for section in SECTIONS:
-        [articleBodys.append(x) for x in loadArticlesFromRaw(section)]
+        [articleBodys.append(x) for x in loadArticlesFromRaw(path_extension,section)]
     def keyFxn(e):
         return processDate(e["date"])
     articleBodys.sort(reverse=True,key=keyFxn)
     return articleBodys
 
-def loadAllArticlesCondensed():
-    articleBodys = loadAllArticles()
+def loadAllArticlesCondensed(path_extension):
+    articleBodys = loadAllArticles(path_extension)
     condense(articleBodys)
     return articleBodys
 
@@ -125,33 +127,53 @@ def home():
 
     articleBodys = []
     section_name = switch_dir_to_section_header('home')
-    articleBodys = loadAllArticlesCondensed()
-    html = render_template('home_page_block.html', articles=articleBodys)
+    articleBodys = loadAllArticlesCondensed("")
+    html = render_template('home_page_block.html', articles=articleBodys, imgs=True)
     return render_template('base.html',header=section_name,content=html)
+
+@app.route('/archive')
+def archive():
+    years = os.listdir(ARTICLEPATH + "/archive")
+    html = render_template('archive.html', years = years)
+    return render_template('base.html',header="Archive",content=html)
+
+@app.route('/archive/<year>')
+def archive_year(year):
+    path_extension = f"/archive/{year}"
+    articleBodys = []
+
+    articleBodys = loadAllArticlesCondensed(path_extension)
+    html = render_template('home_page_block.html', articles=articleBodys, imgs=False)
+    return render_template('base.html',header=f"Archive {year}",content=html)
+
+@app.route('/archive/<year>/<section>/<article>')
+def archive_article(year,section,article):
+    path = f"{ARTICLEPATH}/archive/{year}/{section}/{article}.json"
+    return grab_article(path)
 
 @app.route('/<section>')
 def section_page(section):
     section_name = switch_dir_to_section_header(section)
     try:
-        articleBodys = loadArticlesFromRaw(section)
+        articleBodys = loadArticlesFromRaw("",section)
         condense(articleBodys)
 
-        html = render_template('home_page_block.html', articles=articleBodys)
+        html = render_template('home_page_block.html', articles=articleBodys, imgs=True)
         return render_template('base.html',header=section_name,content=html)
     except Exception as e:
         return f"ERROR: {e}"
 
-def loadArticlesFromRaw(section):
-    articles = getArticles(section);
+def loadArticlesFromRaw(path_extension,section):
+    articles = getArticles(path_extension,section);
     articleBodys = []
     for article in articles:
         if(section != 'drafts'):
             if article != "":
                 try:
-                    with open(f"{ARTICLEPATH}/{section}/{article}.json")as f:
+                    with open(f"{ARTICLEPATH}/{path_extension}/{section}/{article}.json")as f:
                         articleContent = f.read()
                     articleContent = json.loads(articleContent) #get dictionary from json file
-                    articleContent['article_link'] = f"/{section}/{article}" #add article link
+                    articleContent['article_link'] = f"{path_extension}/{section}/{article}" #add article link
                     articleContent['article'] = articleContent['article']
                     articleBodys.append(articleContent)
                 except:pass
@@ -178,8 +200,12 @@ def condense(articles):
 
 @app.route('/<section>/<article>')
 def article(section,article):
+    path = f"{ARTICLEPATH}/{section}/{article}.json"
+    return grab_article(path)
+
+def grab_article(path):
     try:
-        with open(f"{ARTICLEPATH}/{section}/{article}.json") as f:
+        with open(path) as f:
             articleContent = f.read()
 
         articleContent = json.loads(articleContent)
@@ -195,6 +221,9 @@ def article(section,article):
 
     except Exception as e:
         return f"ERROR: {e}"
+
+
+
 
 @app.route("/admin", methods=['GET','POST'])
 def admin():
@@ -341,6 +370,16 @@ def development():
 
             if "process_drafts" in request.form:
                 pass
+
+            if "archive" in request.form:
+                return render_template('dev.html',archive=True)
+
+            if "archive_name" in request.form:
+                archive_name = request.form["text"]
+                os.mkdir(f"{ARTICLEPATH}/archive/{archive_name}")
+                os.system("rm -r {ARTICLEPATH}/!(aboutus)/imgs")
+                os.system("mv {ARTICLEPATH}/!(archive) {ARTICLEPATH}/archive/{archive_name}")
+
         return render_template('dev.html')
 
 @app.route('/mailinglist', methods=('GET','POST'))
