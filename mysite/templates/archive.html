@@ -1,0 +1,9 @@
+<section>
+    {% for myyear in years %}
+    <article>
+        <!--<div class="content">-->
+            <center><a href="{{url_for('archive_year', year=myyear)}}"><h3>{{myyear}}</h3></a></center>
+        <!--</div> -->
+    </article>
+    {% endfor %}
+</section>
