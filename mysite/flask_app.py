@@ -15,7 +15,7 @@ ROOT = "/home/seneshtimes/seneshtimes/mysite"
 ARTICLEPATH = f"{ROOT}/articles"
 PATH = "/home/seneshtimes/seneshtimes/mysite"
 
-SECTIONS = ['sports','worldevents','schoolevents','artsandentertainment']
+SECTIONS = ['sports','worldevents','schoolevents','artsandentertainment', 'aboutus']
 
 def loggedIn(session):
     if "username" in session:
@@ -377,8 +377,23 @@ def development():
             if "archive_name" in request.form:
                 archive_name = request.form["text"]
                 os.mkdir(f"{ARTICLEPATH}/archive/{archive_name}")
-                os.system("rm -r {ARTICLEPATH}/!(aboutus)/imgs")
-                os.system("mv {ARTICLEPATH}/!(archive) {ARTICLEPATH}/archive/{archive_name}")
+
+                for dir in os.listdir(ARTICLEPATH):
+                    if dir != "archive":
+                        for img in os.listdir(f"{ARTICLEPATH}/{dir}/imgs"):
+                            os.remove(f"{ARTICLEPATH}/{dir}/imgs/{img}")
+
+                # os.system("rm -rfd {ARTICLEPATH}/!(archive)/imgs")
+
+                for dir in os.listdir(ARTICLEPATH):
+                    if dir != "archive":
+                        os.rename(f"{ARTICLEPATH}/{dir}", f"{ARTICLEPATH}/archive/{archive_name}/{dir}")
+
+                for dir in SECTIONS:
+                    os.mkdir(f"{ARTICLEPATH}/{dir}")
+                    os.mkdir(f"{ARTICLEPATH}/{dir}/imgs")
+
+                # os.system("mv {ARTICLEPATH}/!(archive) {ARTICLEPATH}/archive/{archive_name}/")
 
         return render_template('dev.html')
 
