@@ -14,7 +14,7 @@ app.config.update(SECRET_KEY=os.urandom(24))
 ROOT = "/home/seneshtimes/seneshtimes/mysite"
 ARTICLEPATH = f"{ROOT}/articles"
 PATH = "/home/seneshtimes/seneshtimes/mysite"
-
+CONFETTIMODE = True
 SECTIONS = ['sports','worldevents','schoolevents','artsandentertainment', 'aboutus']
 
 def loggedIn(session):
@@ -122,6 +122,14 @@ def loadAllArticlesCondensed(path_extension):
     condense(articleBodys)
     return articleBodys
 
+
+def getConfetti():
+	with open(f"{ROOT}/templates/confetti.html") as f:
+		confet = f.read()
+
+	return confet
+
+
 @app.route("/home")
 def home():
 
@@ -129,6 +137,9 @@ def home():
     section_name = switch_dir_to_section_header('home')
     articleBodys = loadAllArticlesCondensed("")
     html = render_template('home_page_block.html', articles=articleBodys, imgs=True)
+    if CONFETTIMODE:
+	    html = getConfetti() + html
+
     return render_template('base.html',header=section_name,content=html)
 
 @app.route('/archive')
