@@ -1,3 +1,8 @@
+# This website was created by Abel Bellows (github abellows50). The source code is available at https://github.com/abellows50/seneshtimes excluding article details and auth files.
+# Code is provided to you under the MIT licence. -->
+# Seneshtimes was founded by Adam Bellows in 2024. Adam is a person with a vision and he envisioned a future for senesh where freedom of press was encouraged and where people had an
+# expressive outlet. He created it in The Senesh Times.-->
+
 from flask import Flask, render_template, url_for, redirect, request, send_from_directory, session
 import json
 import os
