@@ -16,6 +16,8 @@ ARTICLEPATH = f"{ROOT}/articles"
 PATH = "/home/seneshtimes/seneshtimes/mysite"
 
 SECTIONS = ['sports','worldevents','schoolevents','artsandentertainment', 'aboutus']
+DISPLAYSECTIONS = ['sports','worldevents','schoolevents','artsandentertainment']
+
 
 def loggedIn(session):
     if "username" in session:
@@ -110,7 +112,7 @@ def hello_world():
 
 def loadAllArticles(path_extension):
     articleBodys = []
-    for section in SECTIONS:
+    for section in DISPLAYSECTIONS:
         [articleBodys.append(x) for x in loadArticlesFromRaw(path_extension,section)]
     def keyFxn(e):
         return processDate(e["date"])
@@ -265,8 +267,8 @@ def admin():
 
 def getTree():
     tree = {}
-    for section in SECTIONS:
-        tree[section] = getArticles(section)
+    for section in DISPLAYSECTIONS:
+        tree[section] = getArticles(section,"")
     return tree
 
 @app.route('/dev', methods=['GET','POST'])
@@ -346,7 +348,7 @@ def development():
             if "search" in request.form:
                 return render_template('dev.html',search=True)
             if "searching" in request.form:
-                articles = loadAllArticles()
+                articles = loadAllArticles("")
                 target = request.form['text'].upper()
 
                 hits = []
