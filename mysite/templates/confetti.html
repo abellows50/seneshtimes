@@ -1,0 +1,203 @@
+<!-- CONFETTI FOR FIRST DAY BACK -->
+     <div>
+  <style>
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      /* Make it non-interactive */
+    }
+
+    .confetti .piece {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #0433ff;
+      /* Example color, change to your liking */
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: fall 5s linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate(0, -100%);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translate(0, 100vh);
+        opacity: 0;
+      }
+    }
+
+    /* ... rest of your CSS ... */
+
+    .text-container {
+      position: absolute;
+      /* Position it within the page */
+      top: 50%;
+      /* Vertical center */
+      left: 50%;
+      /* Horizontal center */
+      transform: translate(-50%, -50%);
+      /* Centering using translate */
+      text-align: center;
+      /* Center-align the text within the container */
+    }
+
+    .angled-text {
+      transform: rotate(-10deg);
+      /* Rotate the text (adjust the angle as needed) */
+    }
+
+    /* ... rest of your CSS ... */
+
+    .text-container1 {
+      position: absolute;
+      top: 40%;
+      left: 40%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      animation: pulse 1.5s ease-in-out infinite;
+      /* Add the pulse animation */
+    }
+
+
+    .angled-text {
+      transform: rotate(-10deg);
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        /* Start at normal size */
+        opacity: 1;
+        /* Full opacity */
+      }
+
+      50% {
+        transform: scale(1.5);
+        /* Expand slightly */
+        opacity: 0.8;
+        /* Slightly less opaque */
+      }
+
+      100% {
+        transform: scale(1);
+        /* Back to normal size */
+        opacity: 1;
+        /* Full opacity */
+      }
+    }
+
+    /* ... rest of your CSS ... */
+
+    .text-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .angled-text {
+      transform: rotate(10deg);
+      animation: pulse 1.5s ease-in-out infinite;
+      /* Apply animation to angled-text */
+    }
+
+    /* ... rest of your CSS ... */
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+
+
+  <div class="text-container">
+    <h1 class="angled-text">WELCOME BACK</h1>
+    <h2 class="angled-text">Issue 1</h2>
+  </div>
+
+
+  <div class="confetti"></div>
+
+  <script>
+    const confettiContainer = document.querySelector('.confetti');
+
+    function createConfetti() {
+      for (let i = 0; i < 1000; i++) {
+        const piece = document.createElement('div');
+        piece.classList.add('piece');
+
+        // Randomize left position
+        piece.style.left = `${Math.random() * 100}%`;
+
+        // Randomize animation delay
+        piece.style.animationDelay = `${Math.random() * 3}s`;
+
+        // Randomize animation duration
+        piece.style.animationDuration = `${Math.random() * 2 + 2}s`; // Between 2 and 4 seconds
+
+        // Randomize animation timing function
+        const timingFunctions = ['ease', 'ease-in', 'ease-out', 'ease-in-out'];
+        piece.style.animationTimingFunction = timingFunctions[Math.floor(Math.random() * timingFunctions.length)];
+
+        // Randomize animation direction
+        const directions = ['normal', 'reverse'];
+        piece.style.animationDirection = directions[Math.floor(Math.random() * directions.length)];
+
+        // Randomize animation fill mode
+        const fillModes = ['none', 'forwards', 'backwards', 'both'];
+        piece.style.animationFillMode = fillModes[Math.floor(Math.random() * fillModes.length)];
+
+        // Randomize color
+        const colors = ['#f00', '#0f0', '#00f', '#ff0', '#0ff', '#f0f']; // Add more colors
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+
+        // Randomize size
+        const size = Math.random() * 15 + 2; // Between 2px and 17px
+        piece.style.width = `${size}px`;
+        piece.style.height = `${size}px`;
+
+        confettiContainer.appendChild(piece);
+      }
+    }
+
+    createConfetti();
+
+    setTimeout(() => {
+      const pieces = document.querySelectorAll('.piece');
+      pieces.forEach(piece => {
+        piece.style.animation = 'none';
+        piece.style.opacity = '0';
+      });
+    }, 5000); // 5 seconds
+
+    // ... (Your existing JavaScript code for confetti) ...
+
+    const textContainer = document.querySelector('.text-container');
+
+    setTimeout(() => {
+      textContainer.style.opacity = '0'; // Fade out the text
+    }, 5000); // 5 seconds
+  </script>
+  </div>
