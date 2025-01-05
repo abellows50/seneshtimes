@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hannah Senesh Times</title>
+    <title>The Senesh Times</title>
     <link rel="icon" href="{{url_for('static', filename='logo.png')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
     <link href="https://g1.nyt.com/fonts/css/web-fonts.7705b21d4573b168a8aaebc4ff17d395d2458dca.css" rel="stylesheet" type="text/css" />
@@ -19,7 +19,8 @@
 	{% if header %}
 	   <h1>{{header|safe}}</h1>
 	{% else %}
-	   Hannah Senesh Times
+	   <h1 style="margin-bottom:1px;">The Senesh Times</h1>
+	   <!--<center><i>Nu?</i></center>-->
 	{% endif %}
     </header>
     <!--<div class="search-container">

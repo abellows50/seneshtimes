@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, url_for, redirect, request, send_from_directory, session
 import json
 import os
@@ -131,7 +132,7 @@ def home():
     section_name = switch_dir_to_section_header('home')
     articleBodys = loadAllArticlesCondensed("")
     html = render_template('home_page_block.html', articles=articleBodys, imgs=True)
-    return render_template('base.html',header=section_name,content=html)
+    return render_template('base.html',header=False,content=html)
 
 @app.route('/archive')
 def archive():
