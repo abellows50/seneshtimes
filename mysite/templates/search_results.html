@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block body %}
-    <h1>RESULTS: </h1>
+    <h1>Results for your search ({{search}}): </h1>
     <ul>
     {% for article in articles %}
         <li><a href="{{article['article_link']|safe}}">{{article['title']}} by {{article['author']}}</a><br></li>

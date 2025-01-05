@@ -245,7 +245,7 @@ def search_results():
     if request.method=="POST":
         target = request.form["text"]
         hits = return_matching_articles(target)
-        return render_template("search_results.html", articles=hits)
+        return render_template("search_results.html", articles=hits, search=target)
         # return str(hits)
     return redirect("home")
 
