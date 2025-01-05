@@ -2,4 +2,4 @@ seneshtimes is a python flask based newspaper website for Hannah Senesh Communit
 
 The web developer is Abel Bellows (abellows50).
 
-the website can be viewed at seneshtimes.pythonanywhere.com
+the website can be viewed at [The Senesh Times](seneshtimes.pythonanywhere.com)
