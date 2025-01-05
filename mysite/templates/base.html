@@ -19,7 +19,7 @@
 	{% if header %}
 	   <h1>{{header|safe}}</h1>
 	{% else %}
-	   <h1 style="margin-bottom:1px;">The Senesh Times</h1>
+	   <h1>The Senesh Times</h1>
 	   <!--<center><i>Nu?</i></center>-->
 	{% endif %}
     </header>
@@ -42,6 +42,20 @@
     {{content|safe}}
    {% block body %}
    {% endblock %}
+    <!--GPT BAR-->
+    <div class="search-icon-container" onclick="toggleSearchBar()">
+        <div class="search-icon"></div>
+    </div>
+
+    <div id="search-bar-container">
+        <form id="search-form" action="{{ url_for('search_results') }}" method="POST">
+            <br>
+            <br>
+            <input type="search" name="text" placeholder="Search..." required>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
     <footer>
         <nav><a href="{{url_for('mailingList')}}">Sign Up For Our Mailing List</a></nav>
 
@@ -49,7 +63,18 @@
         &copy; 2024 Hannah Senesh Times
     </footer>
 
+    <script>
+        function toggleSearchBar() {
+            const searchBar = document.getElementById('search-bar-container');
+            searchBar.classList.toggle('active');
+            if (searchBar.classList.contains('active')) {
+                searchBar.querySelector('input').focus();
+            }
+        }
+    </script>
+
     <script async defer src="https://analytics.us.umami.is/script.js" data-website-id="3dc040fb-689a-445b-9b95-9e9296bc1ed3"></script>
+
 
 </body>
 </html>

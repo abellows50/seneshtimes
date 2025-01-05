@@ -225,8 +225,29 @@ def grab_article(path):
     except Exception as e:
         return f"ERROR: {e}"
 
+def return_matching_articles(target):
+    articles = loadAllArticles("")
+    target = target.upper()
 
+    hits = []
+    for a in articles:
+        if target in a['title'].upper() or target in a['author'].upper():
+            hits.append(a)
+    for a in articles:
+        if a not in hits and target in a['article'].upper():
+            hits.append(a)
+    # return f"{hits} # {target}"
 
+    return hits
+
+@app.route("/search", methods=['GET','POST'])
+def search_results():
+    if request.method=="POST":
+        target = request.form["text"]
+        hits = return_matching_articles(target)
+        return render_template("search_results.html", articles=hits)
+        # return str(hits)
+    return redirect("home")
 
 @app.route("/admin", methods=['GET','POST'])
 def admin():
@@ -272,6 +293,28 @@ def getTree():
         tree[section] = getArticles(section,"")
     return tree
 
+def process_delete_request(request):
+    toDelete = []
+    for key in request.form.keys():
+        if "/" in key:
+            toDelete.append(request.form[key])
+    for file in toDelete:
+        section = file.split("/")[0]
+        fileName = file.split("/")[1]
+
+        with open(f"{ARTICLEPATH}/{file}.json")as f:
+            articleContent = f.read()
+            articleContent = json.loads(articleContent)
+
+        imgPath = f"{ARTICLEPATH}/{articleContent['src']}"
+
+
+
+        os.remove(f"{ARTICLEPATH}/{file}.json")
+        os.remove(imgPath)
+
+
+
 @app.route('/dev', methods=['GET','POST'])
 def development():
     if not dev(session):
@@ -279,36 +322,17 @@ def development():
     else:
         if request.method == "POST":
             if "logout" in request.form:
-                session.pop('username',None)
-                session.pop('logged_in',None)
+                logout(session)
                 return redirect("/home")
 
             if "tree" in request.form:
-                # return f"{getTree()}"
                 return render_template('dev.html', tree=getTree())
 
             if "delete" in request.form:
                 return render_template('dev.html',delete_tree=getTree())
 
             if "what_to_delete" in request.form:
-                toDelete = []
-                for key in request.form.keys():
-                    if "/" in key:
-                        toDelete.append(request.form[key])
-                for file in toDelete:
-                    section = file.split("/")[0]
-                    fileName = file.split("/")[1]
-
-                    with open(f"{ARTICLEPATH}/{file}.json")as f:
-                        articleContent = f.read()
-                        articleContent = json.loads(articleContent)
-
-                    imgPath = f"{ARTICLEPATH}/{articleContent['src']}"
-
-
-
-                    os.remove(f"{ARTICLEPATH}/{file}.json")
-                    os.remove(imgPath)
+                process_delete_request(request)
 
             if "addUser" in request.form:
                 return render_template('dev.html',add_user=True)
@@ -349,17 +373,8 @@ def development():
             if "search" in request.form:
                 return render_template('dev.html',search=True)
             if "searching" in request.form:
-                articles = loadAllArticles("")
                 target = request.form['text'].upper()
-
-                hits = []
-                for a in articles:
-                    if target in a['title'].upper() or target in a['author'].upper():
-                        hits.append(a)
-                for a in articles:
-                    if a not in hits and target in a['article'].upper():
-                        hits.append(a)
-                # return f"{hits} # {target}"
+                hits = return_matching_articles(target)
                 return render_template('dev.html',search=True, articles=hits)
 
             if "edited" in request.form:
